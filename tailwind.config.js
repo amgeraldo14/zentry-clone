@@ -1,3 +1,4 @@
+require("./cssAsPlugin.cjs");
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -13,7 +14,7 @@ export default {
       colors: {
         blue: {
           50: "#dfdff0",
-          70: "#dfdff2",
+          75: "#dfdff2",
           100: "#f0f2fa",
           200: "#010101",
           300: "#4fb7dd",
@@ -28,5 +29,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require("./src/index.css")],
 };
