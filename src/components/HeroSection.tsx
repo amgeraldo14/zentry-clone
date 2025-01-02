@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
 import { ScrollTrigger } from "gsap/all";
+import Loader from "./Loader";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,6 +14,8 @@ const HeroSection = () => {
   const [hasClicked, setHasClicked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadedVideos, setLoadedVideos] = useState(0);
+  const [bigVideo, setBigVideo] = useState("");
+  const [isAnimating, setIsAnimating] = useState(false);
   const nextVideoRef = useRef(null);
   const totalVideos = 4;
   const upcomingVideoIndex = (currentIndex % totalVideos) + 1;
@@ -66,25 +69,34 @@ const HeroSection = () => {
   });
 
   const handleMiniVideoClick = () => {
-    setHasClicked(true);
-    setCurrentIndex(upcomingVideoIndex);
+    if (!isAnimating) {
+      setHasClicked(true);
+      setCurrentIndex(upcomingVideoIndex);
+    }
   };
 
   const getVideoSrc = (index: number) => `videos/hero-${index}.mp4`;
+
+  useEffect(() => {
+    if (hasClicked) {
+      setIsAnimating(true);
+      const timeout = setTimeout(() => {
+        setBigVideo(getVideoSrc(currentIndex));
+        setIsAnimating(false);
+      }, 1000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    } else {
+      setBigVideo(getVideoSrc(currentIndex));
+    }
+  }, [hasClicked, currentIndex]);
 
   const handleVideoLoad = () => setLoadedVideos((value) => value + 1);
 
   return (
     <div className="relative h-dvh w-full overflow-x-hidden ">
-      {isLoading && (
-        <div className="flex-center absolute z-[100] h-dvh w-screen overflow-hidden bg-violet-50">
-          <div className="three-body">
-            <div className="three-body__dot" />
-            <div className="three-body__dot" />
-            <div className="three-body__dot" />
-          </div>
-        </div>
-      )}
+      {isLoading && <Loader />}
       <div
         id="video-frame"
         className="relative z-10 h-full overflow-hidden w-full rounded-lg bg-blue-75"
@@ -95,12 +107,11 @@ const HeroSection = () => {
             className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100"
           >
             <video
-              ref={nextVideoRef}
               src={getVideoSrc(upcomingVideoIndex)}
               loop
               muted
               id="current-video"
-              className="size-64  origin-center scale-150 object-cover object-center"
+              className="size-64  origin-center scale-100 object-cover object-center"
               onLoadedData={handleVideoLoad}
             />
           </div>
@@ -111,16 +122,21 @@ const HeroSection = () => {
           loop
           muted
           id="next-video"
-          className="absolute-center invisible z-20 size-64 object-cover object-center"
+          className="absolute-center invisible absolute z-20 size-64 object-cover object-center"
           onLoadedData={handleVideoLoad}
         />
         <video
-          src={getVideoSrc(currentIndex)}
+          src={bigVideo}
           autoPlay
           loop
           muted
-          className="absolute size-full object-cover object-center"
-          onLoadedData={handleVideoLoad}
+          className="absolute left-0 top-0 size-full object-cover object-center"
+          onLoadedData={(e) => {
+            if (hasClicked) {
+              e.currentTarget.currentTime = 1;
+            }
+            handleVideoLoad();
+          }}
         />
         <h2 className="special-font hero-heading absolute bottom-5 right-5 z-40 text-blue-75">
           G<b>a</b>ming
