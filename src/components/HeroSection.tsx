@@ -6,6 +6,7 @@ import gsap from "gsap";
 
 import { ScrollTrigger } from "gsap/all";
 import Loader from "./Loader";
+import { cn } from "../lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +16,8 @@ const HeroSection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadedVideos, setLoadedVideos] = useState(0);
   const [bigVideo, setBigVideo] = useState("");
+  const [delayedUpcomingVideo, setDelayedUpcomingVideo] =
+    useState("videos/hero-2.mp4");
   const [isAnimating, setIsAnimating] = useState(false);
   const nextVideoRef = useRef(null);
   const totalVideos = 4;
@@ -82,6 +85,7 @@ const HeroSection = () => {
       setIsAnimating(true);
       const timeout = setTimeout(() => {
         setBigVideo(getVideoSrc(currentIndex));
+        setDelayedUpcomingVideo(getVideoSrc(upcomingVideoIndex));
         setIsAnimating(false);
       }, 1000);
       return () => {
@@ -104,7 +108,7 @@ const HeroSection = () => {
         <div className="mask-clip-path absolute-center z-50 size-64 cursor-pointer overflow-hidden rounded-lg ">
           <div
             onClick={handleMiniVideoClick}
-            className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100"
+            className="origin-center scale-50  opacity-0 transition-all  duration-500 ease-in hover:scale-100 hover:opacity-100"
           >
             <video
               src={getVideoSrc(upcomingVideoIndex)}
@@ -116,6 +120,15 @@ const HeroSection = () => {
             />
           </div>
         </div>
+        {/* to smoothen the animation */}
+        <video
+          src={delayedUpcomingVideo}
+          className={cn(
+            "absolute-center invisible absolute z-20 size-64 object-cover object-center",
+            { visible: hasClicked }
+          )}
+          onLoadedData={handleVideoLoad}
+        />
         <video
           ref={nextVideoRef}
           src={getVideoSrc(currentIndex)}
