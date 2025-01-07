@@ -6,7 +6,7 @@ type ButtonType = {
   id?: string | undefined;
   rightIcon?: React.ReactNode;
   leftIcon?: React.ReactNode;
-  containerClassName: string;
+  containerClassName?: string;
 };
 
 const Button = ({
