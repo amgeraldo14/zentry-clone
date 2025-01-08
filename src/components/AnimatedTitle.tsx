@@ -5,9 +5,11 @@ import { useGSAP } from "@gsap/react";
 const AnimatedTitle = ({
   title,
   containerClassName,
+  sectionId,
 }: {
   title: string;
-  containerClassName: string;
+  containerClassName?: string;
+  sectionId?: string | number;
 }) => {
   useGSAP(() => {
     const titleAnimation = gsap.timeline({
