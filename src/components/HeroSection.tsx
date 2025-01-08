@@ -17,7 +17,7 @@ const HeroSection = () => {
   const [loadedVideos, setLoadedVideos] = useState(0);
   const [bigVideo, setBigVideo] = useState("");
   const [delayedUpcomingVideo, setDelayedUpcomingVideo] =
-    useState("videos/hero-2.mp4");
+    useState("videos/hero-2.webm");
   const [isAnimating, setIsAnimating] = useState(false);
   const nextVideoRef = useRef(null);
   const totalVideos = 4;
@@ -78,7 +78,7 @@ const HeroSection = () => {
     }
   };
 
-  const getVideoSrc = (index: number) => `videos/hero-${index}.mp4`;
+  const getVideoSrc = (index: number) => `videos/hero-${index}.webm`;
 
   useEffect(() => {
     if (hasClicked) {
